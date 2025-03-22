@@ -72,7 +72,7 @@ jobs:
         run: echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
 
       - name: Debug file system
-        run: ls lR
+        run: ls -lR
         
       - name: Build and Push Docker Image
         run: |
