@@ -74,6 +74,9 @@ jobs:
       - name: Debug file system
         run: ls -lR
         
+      - name: Check for Dockerfile
+        run: test -f Dockerfile && echo "Dockerfile found!" || echo "Dockerfile missing!"
+       
       - name: Build and Push Docker Image
         run: |
           #docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/nodejs-hello-world:latest .
