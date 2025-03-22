@@ -31,18 +31,18 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
-
-      - name: Set Up SonarScanner
+      
+      - name: Install SonarScanner
         run: |
-          curl -Lo sonar-scanner.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.0.1.3006-linux.zip
-          unzip sonar-scanner.zip
-          sudo mv sonar-scanner-5.0.1.3006-linux /opt/sonar-scanner
-          echo "export PATH=/opt/sonar-scanner/bin:$PATH" >> $HOME/.bashrc
-          source $HOME/.bashrc
+            curl -Lo sonar-scanner.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.0.1.3006-linux.zip
+            unzip sonar-scanner.zip
+            sudo mv sonar-scanner-5.0.1.3006-linux /opt/sonar-scanner
+            echo "export PATH=/opt/sonar-scanner/bin:$PATH" >> $HOME/.bashrc
+            source $HOME/.bashrc    
 
       - name: Run SonarQube Scan
         run: |
-          sonar-scanner \
+          /opt/sonar-scanner/bin/sonar-scanner \
             -Dsonar.projectKey=nodejs-hello-world \
             -Dsonar.sources=. \
             -Dsonar.host.url=http://localhost:9000 \
