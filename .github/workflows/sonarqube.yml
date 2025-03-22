@@ -52,7 +52,13 @@ jobs:
             -Dsonar.projectKey=nodejs-hello-world \
             -Dsonar.sources=. \
             -Dsonar.host.url=http://localhost:9000 \
-            -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+            -Dsonar.login=${{ secrets.SONAR_TOKEN }} || \
+            /opt/sonar-scanner/bin/sonar-scanner \
+            -Dsonar.projectKey=nodejs-hello-world \
+            -Dsonar.sources=. \
+            -Dsonar.host.url=http://localhost:9000 \
+            -Dsonar.login=admin \
+            -Dsonar.password=admin
 
   docker:
     needs: sonar
