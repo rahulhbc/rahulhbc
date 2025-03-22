@@ -32,6 +32,12 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
       
+      - name: Start SonarQube
+        run: |
+          docker run -d --name sonarqube -p 9000:9000 sonarqube:lts-community
+          echo "Waiting for SonarQube to start..."
+          sleep 60  # Wait to ensure SonarQube is ready
+          curl -I http://localhost:9000 || (echo "SonarQube did not start" && exit 1)
       - name: Install SonarScanner
         run: |
             curl -Lo sonar-scanner.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.0.1.3006-linux.zip
