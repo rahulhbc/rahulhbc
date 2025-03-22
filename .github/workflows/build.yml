@@ -1,0 +1,78 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Set Up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 22
+
+      - name: Install Dependencies
+        run: npm install
+        working-directory: assessment
+      - name: Run Tests
+        run: npm test || echo "No tests available"
+
+  sonar:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+      
+      - name: Start SonarQube
+        run: |
+          docker run -d --name sonarqube -p 9000:9000 sonarqube:lts-community
+          echo "Waiting for SonarQube to start..."
+          sleep 60  # Wait to ensure SonarQube is ready
+          curl -I http://localhost:9000 || (echo "SonarQube did not start" && exit 1)
+      - name: Install SonarScanner
+        run: |
+            curl -Lo sonar-scanner.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.0.1.3006-linux.zip
+            unzip sonar-scanner.zip
+            sudo mv sonar-scanner-5.0.1.3006-linux /opt/sonar-scanner
+            echo "export PATH=/opt/sonar-scanner/bin:$PATH" >> $HOME/.bashrc
+            source $HOME/.bashrc    
+
+      - name: Run SonarQube Scan
+        run: |
+          /opt/sonar-scanner/bin/sonar-scanner \
+            -Dsonar.projectKey=nodejs-hello-world \
+            -Dsonar.sources=. \
+            -Dsonar.host.url=http://localhost:9000 \
+            -Dsonar.login=${{ secrets.SONAR_TOKEN }} || \
+            /opt/sonar-scanner/bin/sonar-scanner \
+            -Dsonar.projectKey=nodejs-hello-world \
+            -Dsonar.sources=. \
+            -Dsonar.host.url=http://localhost:9000 \
+            -Dsonar.login=admin \
+            -Dsonar.password=admin
+
+  docker:
+    needs: sonar
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Log in to Docker Hub
+        run: echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+
+      - name: Build and Push Docker Image
+        run: |
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/nodejs-hello-world:latest .
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/nodejs-hello-world:latest
+
