@@ -1,5 +1,5 @@
-FROM node:18
+FROM node:22
 WORKDIR /app
 COPY . .
-CMD ["node", "app.js"]
+CMD ["node", "index.js"]
 EXPOSE 80
