@@ -81,7 +81,7 @@ jobs:
         run: |
           #docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/nodejs-hello-world:latest .
           #docker push ${{ secrets.DOCKERHUB_USERNAME }}/nodejs-hello-world:v1
-          docker build -t rahulhbc/nodejs-hello-world:v1 -f assessment/Dockerfile assessment/
+          docker build -t rahulhbc/nodejs-hello-world:v1 -f assessment/Dockerfile .
           docker push rahulhbc/nodejs-hello-world:v1
           
 
