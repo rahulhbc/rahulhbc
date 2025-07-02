@@ -80,8 +80,8 @@ jobs:
       - name: Build and Push Docker Image
         run: |
           #docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/arunk540/arundockerrepo:latest .
-          #docker push ${{ secrets.DOCKERHUB_USERNAME }}/arunk540/arundockerrepo:v1
-          docker build -t arunk540/arundockerrepo:v1 -f assessment/Dockerfile .
-          docker push arunk540/arundockerrepo:v1
+          #docker push ${{ secrets.DOCKERHUB_USERNAME }}/arunk540/arundockerrepo:v2
+          docker build -t arunk540/arundockerrepo:v2 -f assessment/Dockerfile .
+          docker push arunk540/arundockerrepo:v2
           
 
